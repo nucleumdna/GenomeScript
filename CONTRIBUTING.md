@@ -1,6 +1,36 @@
 # Contributing to GenomeScript 🧬
 
-First off, thank you for considering contributing to GenomeScript! This document provides guidelines and instructions for contributing to the project.
+We love your input! We want to make contributing to GenomeScript as easy and transparent as possible.
+
+## Development Process
+1. Fork the repo
+2. Create a branch
+3. Make your changes
+4. Submit a PR
+
+## Pull Request Process
+1. Update documentation
+2. Run tests
+3. Update CHANGELOG
+4. Submit PR with description
+
+## Code Style
+- Python: Follow PEP 8
+- TypeScript: Use prettier
+- Run linters before committing
+
+## Testing
+```bash
+# Run Python tests
+python -m pytest tests/
+
+# Run frontend tests
+cd frontend
+npm test
+```
+
+## License
+By contributing, you agree that your contributions will be licensed under the MIT License.
 
 ## Code of Conduct 📜
 

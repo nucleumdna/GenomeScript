@@ -1,146 +1,85 @@
-# GenomeScript 🧬
+# GenomeScript
 
-**GenomeScript** is an AI-powered programming language designed for genomic analysis, featuring blockchain integration and Zero-Knowledge Proofs (ZKP).
+A domain-specific language for genomic data analysis with a web-based IDE.
 
-## Features 🌟
+## Features
 
-### Core Features
-- 🧪 Domain-specific language for genomic analysis
-- 🔍 Built-in support for FASTA, VCF, BAM, SAM, CRAM formats
-- ⚡ High-performance parallel processing
-
-### AI & Security
-- 🤖 AI-driven variant impact prediction
-- 🔒 Secure genomic computations using Zero-Knowledge Proofs
-- 🔗 Blockchain-backed genomic data storage
-- 🛡️ Privacy-preserving analysis
-
-### Developer Tools
-- 📚 Rich SDK ecosystem (Python, Rust, JavaScript)
-- 🌐 REST & GraphQL APIs
-- 💻 Web-based IDE integration
-
-## Quick Start 🚀
-
-### Installation
-
-```bash
-# Install using pip
-pip install genomescript
-
-# Install development dependencies
-pip install genomescript[dev]
-```
-
-### Basic Usage
-
-```python
-from genomescript import GenomeScript
-
-# Initialize
-gs = GenomeScript()
-
-# Load and analyze genomic data
-genome = gs.load_fasta("reference.fa")
-variants = gs.load_vcf("variants.vcf")
-
-# AI-powered analysis
-predictions = gs.predict_impact(variants)
-
-# Generate zero-knowledge proof
-proof = gs.generate_proof(genome, "QUERY variant_rs123")
-```
+- Custom lexer and parser for genomic analysis commands
+- Web-based editor with syntax highlighting
+- Real-time tokenization and error detection
+- Support for common genomic file formats (FASTA, VCF, BAM)
 
 ## Documentation 📚
 
-- [Getting Started Guide](./docs/getting-started.md)
-- [API Reference](./docs/api/index.md)
-- [Tutorials](./docs/tutorials/index.md)
-- [Security Guide](./docs/security/index.md)
-- [Contributing Guide](./CONTRIBUTING.md)
+- [Getting Started](docs/getting-started.md)
+- [API Documentation](docs/api/index.md)
+- [Tutorials](docs/tutorials/index.md)
+- [Security Guide](docs/security/index.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
 
-## SDKs & Tools 🛠️
+## Project Structure
 
-### Official SDKs
-- [Python SDK](./sdk/python/README.md)
-- [Rust SDK](./sdk/rust/README.md)
-- [JavaScript SDK](./sdk/javascript/README.md)
-
-### Development Tools
-- VS Code Extension
-- Web IDE
-- CLI Tools
-
-## Example Projects 💡
-
-```python
-# Variant Analysis Example
-from genomescript import GenomeScript
-
-def analyze_variants():
-    gs = GenomeScript()
-    
-    # Load and filter variants
-    variants = gs.load_vcf("data.vcf")
-    filtered = gs.filter(variants, "QUALITY >= 30")
-    
-    # Predict impact
-    results = gs.predict_impact(filtered)
-    return results
+```
+.
+├── docs/               # Documentation
+│   ├── api/           # API reference
+│   ├── tutorials/     # Tutorials
+│   └── security/      # Security guide
+├── frontend/          # React frontend
+│   ├── src/
+│   │   ├── components/
+│   │   └── api/
+│   └── public/
+├── src/              # Python backend
+│   └── compiler/
+│       └── lexer.py
+├── tests/            # Test files
+└── scripts/          # Development scripts
 ```
 
-## Community & Support 👥
+## Quick Start
 
-- [Discord Community](https://discord.gg/genomescript)
-- [GitHub Discussions](https://github.com/genomescript/discussions)
-- [Documentation](https://docs.genomescript.org)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/genomescript)
-
-## Contributing 🤝
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Setup
-
+1. Clone the repository:
 ```bash
-# Clone repository
-git clone https://github.com/genomescript/genomescript.git
+git clone https://github.com/yourusername/genomescript.git
 cd genomescript
+```
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-
-# Install dependencies
+2. Set up the Python environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-pip install -r requirements-dev.txt
-
-# Run tests
-pytest
 ```
 
-## Roadmap 🗺️
-
-- [x] Core language implementation
-- [x] AI model integration
-- [x] ZKP implementation
-- [ ] Enhanced IDE support
-- [ ] Cloud deployment tools
-- [ ] Additional genomic formats
-
-## License 📄
-
-GenomeScript is released under the MIT License. See [LICENSE](LICENSE) for details.
-
-## Citation 📚
-
-If you use GenomeScript in your research, please cite:
-
-```bibtex
-@software{genomescript2024,
-  title = {GenomeScript: AI-Powered Genomic Analysis Language},
-  author = {GenomeScript Team},
-  year = {2024},
-  url = {https://github.com/genomescript/genomescript}
-}
+3. Set up the frontend:
+```bash
+cd frontend
+npm install
 ```
+
+4. Start the development servers:
+```bash
+./scripts/start-dev.sh
+```
+
+## Development
+
+- Backend runs on http://localhost:8000
+- Frontend runs on http://localhost:3000
+- API documentation at http://localhost:8000/docs
+
+## Testing
+
+Run the test suite:
+```bash
+python -m pytest tests/
+```
+
+## Contributing
+
+Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details
