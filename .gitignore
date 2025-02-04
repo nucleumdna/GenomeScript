@@ -1,0 +1,27 @@
+
+---
+
+### ✅ **2. `.gitignore` (Prevents Unwanted Files from Being Tracked)**
+```gitignore
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+*.dll
+*.dylib
+
+# Virtual Environment
+venv/
+.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Logs and database
+logs/
+*.log
+*.sqlite
+
+# OS generated files
+.DS_Store
+Thumbs.db
