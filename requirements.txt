@@ -1,0 +1,29 @@
+# Core dependencies
+fastapi==0.104.0
+uvicorn==0.24.0
+pydantic==2.5.2
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
+
+# Genomic analysis
+pysam==0.21.0
+numpy==1.24.0
+
+# AI/ML
+tensorflow==2.13.0
+keras==2.13.0
+
+# Blockchain
+web3==6.11.0
+py-ecc==6.0.0
+
+# GraphQL
+strawberry-graphql==0.209.0
+
+# Development dependencies
+pytest==7.4.0
+black==23.9.0
+isort==5.12.0
+mypy==1.6.0
+pylint==3.0.0
+pre-commit==3.5.0 

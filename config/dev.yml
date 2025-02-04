@@ -1,0 +1,16 @@
+debug: true
+server:
+  host: "localhost"
+  port: 8000
+  reload: true
+
+database:
+  url: "sqlite:///./dev.db"
+
+ai:
+  model_path: "./models/dev_model.h5"
+  batch_size: 32
+  
+blockchain:
+  network: "development"
+  node_url: "http://localhost:8545" 
