@@ -7,7 +7,7 @@ python-dotenv==1.0.0
 
 # Genomic analysis
 pysam>=0.21.0
-numpy>=1.26.0
+numpy>=1.24.0
 biopython>=1.81
 
 # AI/ML
