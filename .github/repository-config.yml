@@ -1,0 +1,15 @@
+repository:
+  name: GenomeScript
+  description: "A comprehensive genomic analysis framework"
+  homepage: https://nucleumdna.github.io/GenomeScript
+  topics: genomics, bioinformatics, python, dna-analysis
+  private: false
+  has_issues: true
+  has_projects: true
+  has_wiki: true
+  has_downloads: true
+  default_branch: main
+  allow_squash_merge: true
+  allow_merge_commit: true
+  allow_rebase_merge: true
+  delete_branch_on_merge: true 

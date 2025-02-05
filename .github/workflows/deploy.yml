@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy GenomeScript
 
 on:
   push:
@@ -8,37 +8,45 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-        cache: 'pip'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build twine
-
-    - name: Build package
-      run: python -m build
-
-    - name: Publish to PyPI
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: twine upload dist/*
-
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        push: true
-        tags: |
-          ghcr.io/${{ github.repository }}:latest
-          ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-      env:
-        DOCKER_USERNAME: ${{ github.actor }}
-        DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine pytest pytest-cov
+          pip install -r requirements.txt
+          
+      - name: Run tests
+        run: |
+          python -m pytest tests/genomics/ -v --cov=src/genomics
+          
+      - name: Build package
+        run: |
+          python -m build
+          
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m pip install --upgrade twine
+          python -m twine upload --repository-url https://maven.pkg.github.com/nucleumdna/GenomeScript dist/* -u nucleumdna -p ${GITHUB_TOKEN}
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          body_path: .github/RELEASE_TEMPLATE.md
+          owner: nucleumdna
+          repo: GenomeScript
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
