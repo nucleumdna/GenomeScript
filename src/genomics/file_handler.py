@@ -91,16 +91,14 @@ class GenomicFileHandler:
             
             for record in data:
                 if isinstance(record, pysam.AlignedSegment):
-                    # For BAM/SAM files
+                    # For BAM/SAM files, check query_qualities
                     qualities = record.query_qualities
-                    if qualities is None:
-                        continue
-                    
-                    # Check if average quality meets threshold
-                    if sum(qualities) / len(qualities) >= min_phred:
-                        yield record
+                    if qualities is not None and len(qualities) > 0:
+                        avg_quality = sum(qualities) / len(qualities)
+                        if avg_quality >= min_phred:
+                            yield record
                 else:
-                    # For other formats (FASTQ, etc.)
+                    # For other formats, check letter_annotations
                     qualities = record.letter_annotations.get('phred_quality', [])
                     if qualities and sum(qualities) / len(qualities) >= min_phred:
                         yield record
