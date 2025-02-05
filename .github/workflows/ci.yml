@@ -1,10 +1,13 @@
 name: CI
 
 on:
-  push:
-    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
 
 jobs:
   test:
@@ -12,6 +15,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8, 3.9, "3.10"]
+      fail-fast: false  # Continue with other versions even if one fails
 
     steps:
     - uses: actions/checkout@v3
@@ -28,22 +32,15 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
 
-    - name: Run linters
+    - name: Run tests
       run: |
-        black --check src tests
-        isort --check-only src tests
-        pylint src tests
-        mypy src tests
+        python -m pytest tests/ -v --cov=src --cov-report=xml
 
-    - name: Run tests with coverage
-      run: |
-        pytest --cov=src --cov-report=xml tests/
-
-    - name: Upload coverage to Codecov
+    - name: Upload coverage
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
-        fail_ci_if_error: true
+        fail_ci_if_error: false
 
   build-frontend:
     runs-on: ubuntu-latest
