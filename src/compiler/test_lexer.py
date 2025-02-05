@@ -1,4 +1,4 @@
-from lexer import Lexer
+from .lexer import Lexer
 
 def test_script(filename: str):
     """Test lexer with a GenomeScript file"""

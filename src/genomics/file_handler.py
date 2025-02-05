@@ -88,21 +88,20 @@ class GenomicFileHandler:
             # Reset file pointer if needed
             if hasattr(data, 'reset'):
                 data.reset()
-            
+
             for record in data:
                 if isinstance(record, pysam.AlignedSegment):
-                    # For BAM/SAM files, check query_qualities
+                    # For BAM/SAM files, check query qualities
                     qualities = record.query_qualities
                     if qualities is not None and len(qualities) > 0:
                         avg_quality = sum(qualities) / len(qualities)
                         if avg_quality >= min_phred:
                             yield record
                 else:
-                    # For other formats, check letter_annotations
+                    # For other formats, check phred_quality in letter_annotations
                     qualities = record.letter_annotations.get('phred_quality', [])
                     if qualities and sum(qualities) / len(qualities) >= min_phred:
                         yield record
-                    
         except Exception as e:
             raise RuntimeError(f"Error filtering by quality: {str(e)}")
 

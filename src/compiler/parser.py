@@ -8,15 +8,21 @@ class ASTNode:
 
 @dataclass
 class LoadNode(ASTNode):
-    file_type: str
+    format: str
     file_path: str
-    variable_name: str
+    target: str
 
 @dataclass
 class AnalyzeNode(ASTNode):
     target: str
     operation: str
     parameters: List[str]
+
+@dataclass
+class FilterNode(ASTNode):
+    target: str
+    condition: str
+    output: str
 
 class Parser:
     def __init__(self, tokens: List[Token]):
@@ -40,11 +46,15 @@ class Parser:
 
     def _parse_load(self) -> LoadNode:
         self._advance()  # Consume LOAD
-        file_type = self._consume(TokenType.IDENTIFIER).value
-        file_path = self._consume(TokenType.STRING).value
+        format_token = self._consume(TokenType.IDENTIFIER)
+        file_token = self._consume(TokenType.STRING)
         self._consume(TokenType.ARROW)
-        variable_name = self._consume(TokenType.IDENTIFIER).value
-        return LoadNode(file_type, file_path, variable_name)
+        target_token = self._consume(TokenType.IDENTIFIER)
+        return LoadNode(
+            format=format_token.value,
+            file_path=file_token.value.strip('"'),
+            target=target_token.value
+        )
 
     def _is_at_end(self) -> bool:
         return self._peek().type == TokenType.EOF

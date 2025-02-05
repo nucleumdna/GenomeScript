@@ -4,6 +4,7 @@ from src.compiler.parser import Parser
 from src.vm.optimized_vm import OptimizedGenomeVM
 from src.genomics.file_handler import GenomicFileHandler
 from src.ai.variant_predictor import VariantPredictor
+from src.vm.genome_vm import GenomeVM
 
 @pytest.fixture
 def setup_environment(tmp_path):
@@ -81,4 +82,113 @@ def test_error_scenarios(setup_environment):
         ast = parser.parse()
         
         with pytest.raises(Exception):
-            vm.execute(ast) 
+            vm.execute(ast)
+
+def test_load_bam_file(sample_bam):
+    """Test loading BAM file in GenomeScript"""
+    script = f"""
+    LOAD BAM "{sample_bam}" -> alignments
+    """
+    
+    lexer = Lexer(script)
+    parser = Parser(lexer.tokenize())
+    vm = GenomeVM()
+    
+    # Execute
+    vm.execute(parser.parse())
+    
+    # Verify
+    assert 'alignments' in vm.variables
+    assert len(vm.variables['alignments']) > 0
+    assert vm.variables['alignments'][0]['query_name'] == 'read1'
+
+def test_load_multiple_formats(sample_bam, sample_sff):
+    """Test loading multiple file formats"""
+    script = f"""
+    LOAD BAM "{sample_bam}" -> alignments
+    LOAD SFF "{sample_sff}" -> flowgrams
+    """
+    
+    lexer = Lexer(script)
+    parser = Parser(lexer.tokenize())
+    vm = GenomeVM()
+    
+    # Execute
+    vm.execute(parser.parse())
+    
+    # Verify both loaded correctly
+    assert 'alignments' in vm.variables
+    assert 'flowgrams' in vm.variables 
+
+@pytest.fixture
+def test_script(sample_bam, sample_cram, sample_sff, sample_csfasta):
+    """Create a test script using all formats"""
+    return f"""
+    # Load different file formats
+    LOAD BAM "{sample_bam}" -> alignments
+    LOAD CRAM "{sample_cram}" -> cram_data
+    LOAD SFF "{sample_sff}" -> flowgrams
+    LOAD CSFASTA "{sample_csfasta}" -> color_seqs
+    
+    # Analyze the data
+    ANALYZE alignments QUALITY -> alignment_quality
+    """
+
+def test_format_integration(test_script):
+    """Test integration of all file formats"""
+    lexer = Lexer(test_script)
+    parser = Parser(lexer.tokenize())
+    vm = GenomeVM()
+    
+    # Execute
+    vm.execute(parser.parse())
+    
+    # Verify all data was loaded
+    assert 'alignments' in vm.variables
+    assert 'cram_data' in vm.variables
+    assert 'flowgrams' in vm.variables
+    assert 'color_seqs' in vm.variables
+    
+    # Verify data content
+    assert len(vm.variables['alignments']) > 0
+    assert len(vm.variables['flowgrams']) > 0
+    assert len(vm.variables['color_seqs']) > 0
+
+def test_load_formats(sample_bam, sample_sff, sample_csfasta):
+    """Test loading different file formats"""
+    script = f"""
+    LOAD BAM "{sample_bam}" -> alignments
+    LOAD SFF "{sample_sff}" -> flowgrams
+    LOAD CSFASTA "{sample_csfasta}" -> color_seqs
+    """
+    
+    lexer = Lexer(script)
+    parser = Parser(lexer.tokenize())
+    vm = GenomeVM()
+    
+    # Execute
+    vm.execute(parser.parse())
+    
+    # Verify data was loaded
+    assert 'alignments' in vm.variables
+    assert 'flowgrams' in vm.variables
+    assert 'color_seqs' in vm.variables
+    
+    # Verify content
+    assert len(vm.variables['alignments']) > 0
+    assert len(vm.variables['flowgrams']) > 0
+    assert len(vm.variables['color_seqs']) > 0
+
+def test_error_handling():
+    """Test error handling for invalid formats"""
+    script = """
+    LOAD INVALID "test.txt" -> data
+    """
+    
+    lexer = Lexer(script)
+    parser = Parser(lexer.tokenize())
+    vm = GenomeVM()
+    
+    with pytest.raises(ValueError) as exc:
+        vm.execute(parser.parse())
+    assert "Unsupported file format" in str(exc.value) 

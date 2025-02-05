@@ -1,13 +1,14 @@
-from enum import Enum
+from typing import List
 from dataclasses import dataclass
-from typing import List, Any
+from enum import Enum, auto
+from .parser import ASTNode
 
 class OpCode(Enum):
-    LOAD_FILE = "LOAD_FILE"
+    LOAD = auto()
+    STORE = auto()
+    ANALYZE = auto()
     FILTER_QUALITY = "FILTER_QUALITY"
-    ANALYZE = "ANALYZE"
     EXPORT = "EXPORT"
-    STORE = "STORE"
     LOAD_VAR = "LOAD_VAR"
     GENERATE_PROOF = "GENERATE_PROOF"
     VERIFY_PROOF = "VERIFY_PROOF"
@@ -16,7 +17,7 @@ class OpCode(Enum):
 @dataclass
 class Instruction:
     opcode: OpCode
-    args: List[Any]
+    operands: List[str] = None
 
 class BytecodeGenerator:
     def generate(self, ast_nodes: List[ASTNode]) -> List[Instruction]:
@@ -28,7 +29,7 @@ class BytecodeGenerator:
     def _generate_node(self, node: ASTNode) -> List[Instruction]:
         if isinstance(node, LoadNode):
             return [
-                Instruction(OpCode.LOAD_FILE, [node.file_type, node.file_path]),
+                Instruction(OpCode.LOAD, [node.file_type, node.file_path]),
                 Instruction(OpCode.STORE, [node.variable_name])
             ]
         elif isinstance(node, AnalyzeNode):
