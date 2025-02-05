@@ -2,6 +2,7 @@ from typing import List, Dict, Any, Iterator, Optional
 import pysam
 from Bio import SeqIO
 from dataclasses import dataclass
+from src.ai.variant_analyzer import VariantAnalyzer
 
 @dataclass
 class QualityMetrics:
@@ -40,6 +41,7 @@ class GenomicFileHandler:
             'phred': 20,  # Default Phred score threshold
             'coverage': 10  # Default coverage depth
         }
+        self.variant_analyzer = VariantAnalyzer()
 
     def load_file(self, file_path: str, file_type: str) -> Any:
         if file_path in self.cached_data:
@@ -154,3 +156,19 @@ class GenomicFileHandler:
     def _calculate_coverage(self, data: Any) -> float:
         # Implement coverage calculation based on file type
         pass 
+
+    def analyze_variants(self, variants, quality_threshold: float = 30.0):
+        """Analyze variants using AI-driven filtering and impact prediction."""
+        # Pass quality threshold to variant analyzer's config
+        analyzer_config = {
+            'score_threshold': 0.5,
+            'confidence_threshold': 0.6,
+            'quality_threshold': quality_threshold  # Add this
+        }
+        self.variant_analyzer = VariantAnalyzer(model_config=analyzer_config)
+        
+        filtered_variants = self.variant_analyzer.filter_mutations(
+            variants, 
+            quality_threshold=quality_threshold  # Explicitly pass threshold
+        )
+        return filtered_variants 

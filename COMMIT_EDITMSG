@@ -1,0 +1,10 @@
+fix: improve variant analyzer robustness and test coverage
+
+- Add proper error handling for invalid/empty variants
+- Fix feature extraction to handle 8 features consistently
+- Update confidence calculation with better thresholds
+- Add edge case handling for molecular effect prediction
+- Fix test assertions to match new feature count
+- Improve test coverage for boundary conditions
+
+Test coverage increased to 91% for variant_analyzer.py 

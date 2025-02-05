@@ -2,6 +2,7 @@ import pytest
 from pathlib import Path
 import pysam
 from src.genomics.file_handler import GenomicFileHandler, QualityMetrics
+from src.ai.variant_analyzer import VariantImpact
 
 @pytest.fixture
 def test_data_dir(tmp_path):
@@ -101,4 +102,51 @@ def test_metrics_edge_cases(test_data_dir):
     metrics = handler.analyze_quality_metrics(data)
     assert metrics.coverage_depth == 0
     assert metrics.gc_content == 0
-    assert metrics.read_length == 0 
+    assert metrics.read_length == 0
+
+@pytest.fixture
+def handler():
+    return GenomicFileHandler()
+
+@pytest.fixture
+def sample_variants():
+    return [
+        {
+            'QUAL': 40.0,
+            'DP': 25,
+            'REF': 'A',
+            'ALT': 'T',
+            'POS': 1000,
+            'FILTER': 'PASS'
+        },
+        {
+            'QUAL': 15.0,
+            'DP': 8,
+            'REF': 'G',
+            'ALT': 'C',
+            'POS': 2000,
+            'FILTER': 'LOW_QUAL'
+        }
+    ]
+
+def test_variant_analysis(handler, sample_variants):
+    """Test variant analysis with AI-driven filtering"""
+    filtered = handler.analyze_variants(sample_variants)
+    assert len(filtered) == 1
+    assert 'predicted_impact' in filtered[0]
+    assert isinstance(filtered[0]['predicted_impact'], VariantImpact)
+
+def test_variant_analysis_quality_threshold(handler, sample_variants):
+    """Test variant analysis with custom quality threshold"""
+    filtered = handler.analyze_variants(sample_variants, quality_threshold=10.0)
+    assert len(filtered) == 2
+    
+def test_variant_analysis_empty_input(handler):
+    """Test variant analysis with empty input"""
+    filtered = handler.analyze_variants([])
+    assert len(filtered) == 0
+
+def test_variant_analysis_invalid_input(handler):
+    """Test variant analysis with invalid input"""
+    filtered = handler.analyze_variants([{'invalid': 'data'}])
+    assert len(filtered) == 0 
